@@ -3,720 +3,265 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none';">
-<title>TekushNexus // TN</title>
-<meta name="description" content="TekushNexus (TN) — hub tecnológico com terminal interativo e laboratório de prompts para IA.">
+<title>TEKUSHNEXUS // SYSTEM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        'tn-bg': '#070112',
-        'tn-surface': '#110726',
-        'tn-surface2': '#180d36',
-        'tn-line': '#2a1a4a',
-        'tn-magenta': '#ff2bd6',
-        'tn-cyan': '#00f0ff',
-        'tn-violet': '#8b5cf6',
-        'tn-text': '#f1f0f7',
-        'tn-muted': '#948ea8'
+        'hud-bg': '#08080c',
+        'hud-panel': '#0f1017',
+        'hud-border': '#1e2235',
+        'hud-cyan': '#00f0ff',
+        'hud-red': '#ff2a5f',
+        'hud-text': '#c8d0e0',
+        'hud-muted': '#5c657d'
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
-        mono: ['"JetBrains Mono"', 'monospace']
+        tech: ['"Chakra Petch"', 'sans-serif'],
+        mono: ['"Share Tech Mono"', 'monospace']
       }
     }
   }
 };
 </script>
 <style>
-  * { scrollbar-color: #8b5cf6 #110726; }
-  html { scroll-behavior: smooth; }
   body {
-    background-color: #070112;
-    background-image:
-      radial-gradient(circle at 15% 15%, rgba(255, 43, 214, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 85% 65%, rgba(0, 240, 255, 0.08) 0%, transparent 40%),
-      linear-gradient(rgba(255,43,214,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
-    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    background-color: #08080c;
+    background-image: 
+      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
   }
-  .text-glow-magenta { text-shadow: 0 0 12px rgba(255,43,214,0.7), 0 0 28px rgba(255,43,214,0.4); }
-  .text-glow-cyan { text-shadow: 0 0 12px rgba(0,240,255,0.7), 0 0 28px rgba(0,240,255,0.4); }
-  .box-glow { box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 0 0 1px rgba(139, 92, 246, 0.25); }
-  .box-glow-hover:hover { box-shadow: 0 0 20px rgba(0, 240, 255, 0.25), inset 0 0 0 1px rgba(0, 240, 255, 0.5); }
-  .cursor-blink::after {
-    content: '';
-    display: inline-block;
-    width: 0.55em;
-    height: 1em;
-    margin-left: 2px;
-    background: #00f0ff;
-    vertical-align: text-bottom;
-    animation: tn-blink 1.05s steps(1) infinite;
+  .hud-box {
+    background: rgba(15, 16, 23, 0.85);
+    border: 1px solid #1e2235;
+    position: relative;
   }
-  @keyframes tn-blink { 50% { opacity: 0; } }
-  @keyframes tn-scan { 0% { transform: translateY(-100%); } 100% { transform: translateY(100%); } }
-  .tn-scanline::before {
+  .hud-box::before {
     content: '';
     position: absolute;
-    inset: 0;
-    background: linear-gradient(to bottom, transparent, rgba(0,240,255,0.04), transparent);
-    animation: tn-scan 6s linear infinite;
-    pointer-events: none;
+    top: -1px; left: -1px;
+    width: 8px; height: 8px;
+    border-top: 2px solid #00f0ff;
+    border-left: 2px solid #00f0ff;
   }
-  ::selection { background: #ff2bd6; color: #070112; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .cursor-blink::after, .tn-scanline::before { animation: none; }
+  .hud-box::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px;
+    width: 8px; height: 8px;
+    border-bottom: 2px solid #ff2a5f;
+    border-right: 2px solid #ff2a5f;
   }
-  :focus-visible { outline: 2px solid #00f0ff; outline-offset: 2px; }
+  .page-view {
+    display: none;
+  }
+  .page-view.active {
+    display: block;
+  }
 </style>
 </head>
-<body class="bg-tn-bg text-tn-text font-mono min-h-screen selection:bg-tn-magenta selection:text-tn-bg">
+<body class="bg-hud-bg text-hud-text font-mono min-h-screen flex flex-col justify-between p-4 sm:p-8">
 
-<a href="#terminal" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-tn-magenta focus:text-tn-bg focus:px-4 focus:py-2 focus:rounded">Pular para o terminal</a>
-
-<header class="sticky top-0 z-40 border-b border-tn-line/60 bg-tn-bg/80 backdrop-blur-md">
-  <nav class="max-w-6xl mx-auto flex items-center justify-between px-5 py-4" aria-label="Navegação principal">
-    <a href="#top" class="font-display font-bold text-xl tracking-wider text-tn-text flex items-center gap-2">
-      <span class="px-2 py-0.5 rounded bg-tn-magenta/10 border border-tn-magenta/40 text-tn-magenta text-glow-magenta text-sm">TN</span>
-      <span>TekushNexus</span>
-    </a>
-    <ul class="hidden sm:flex items-center gap-8 text-sm font-medium text-tn-muted">
-      <li><a href="#hub" class="hover:text-tn-cyan transition-colors">hub</a></li>
-      <li><a href="#terminal" class="hover:text-tn-cyan transition-colors">terminal</a></li>
-      <li><a href="#promptlab" class="hover:text-tn-cyan transition-colors">prompt_lab</a></li>
-      <li><a href="#contact" class="hover:text-tn-cyan transition-colors">contato</a></li>
-    </ul>
-    <button id="dev-toggle" type="button" class="text-xs border border-tn-line rounded-lg px-3 py-1.5 text-tn-muted hover:text-tn-cyan hover:border-tn-cyan/50 bg-tn-surface/50 transition-all" aria-expanded="false" aria-controls="dev-panel">&lt;/&gt; dev</button>
-  </nav>
-</header>
-
-<main id="top">
-
-<section class="relative overflow-hidden border-b border-tn-line/60 py-16 sm:py-24">
-  <div class="tn-scanline relative max-w-6xl mx-auto px-5">
-    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-tn-cyan/30 bg-tn-cyan/5 text-tn-cyan text-xs tracking-widest uppercase mb-6">
-      <span class="w-2 h-2 rounded-full bg-tn-cyan animate-pulse"></span>
-      Sistema Operacional // Identidade Digital
+  <!-- HEADER NAVEGAÇÃO -->
+  <header class="flex items-center justify-between border-b border-hud-border pb-4">
+    <div class="flex items-center gap-3">
+      <span class="w-3 h-3 bg-hud-red inline-block animate-ping"></span>
+      <span class="font-tech font-bold text-xl sm:text-2xl text-white tracking-widest">TEKUSHNEXUS_</span>
     </div>
-    <h1 class="font-display font-bold text-4xl sm:text-6xl lg:text-7xl leading-[1.08] max-w-4xl tracking-tight">
-      Eu sou o <span class="text-tn-magenta text-glow-magenta">TN</span>.<br>
-      Engenharia, Segurança & IA.
-    </h1>
-    <p class="mt-6 max-w-2xl text-tn-muted text-base sm:text-lg leading-relaxed font-sans">
-      Hub técnico interativo da TekushNexus: explore meu ecossistema via terminal ou acesse o laboratório de engenharia de prompts.
-    </p>
-    <div class="mt-8 flex flex-wrap gap-4">
-      <a href="#terminal" class="rounded-lg bg-tn-magenta/10 border border-tn-magenta text-tn-magenta font-semibold px-6 py-3 text-sm hover:bg-tn-magenta hover:text-tn-bg hover:shadow-[0_0_20px_rgba(255,43,214,0.4)] transition-all">Abrir Terminal</a>
-      <a href="#promptlab" class="rounded-lg bg-tn-cyan/10 border border-tn-cyan text-tn-cyan font-semibold px-6 py-3 text-sm hover:bg-tn-cyan hover:text-tn-bg hover:shadow-[0_0_20px_rgba(0,240,255,0.4)] transition-all">Prompt Lab</a>
+    <nav class="flex gap-4 sm:gap-6 font-tech text-xs sm:text-sm tracking-wider">
+      <button onclick="switchPage('home')" id="nav-home" class="text-hud-cyan border-b-2 border-hud-cyan pb-1 transition-all">01. HUB</button>
+      <button onclick="switchPage('prompt')" id="nav-prompt" class="text-hud-muted hover:text-white transition-all">02. PROMPT_LAB</button>
+      <button onclick="switchPage('terminal')" id="nav-terminal" class="text-hud-muted hover:text-white transition-all">03. TERMINAL</button>
+    </nav>
+  </header>
+
+  <!-- PÁGINA 1: HOME / HUB -->
+  <section id="page-home" class="page-view active max-w-5xl mx-auto my-auto w-full py-8">
+    <div class="text-center mb-10">
+      <span class="text-hud-cyan font-mono text-xs tracking-widest uppercase mb-2 block">// SYSTEM INTERFACE v2.0</span>
+      <h1 class="font-tech font-bold text-3xl sm:text-5xl text-white tracking-wider mb-4">SELECIONE O MÓDULO_</h1>
+      <p class="text-hud-muted max-w-lg mx-auto text-xs sm:text-sm font-mono">Escolha uma das ferramentas abaixo para carregar o módulo correspondente.</p>
     </div>
-  </div>
-</section>
 
-<section id="hub" class="max-w-6xl mx-auto px-5 py-20 border-b border-tn-line/60">
-  <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-2">
-    <div>
-      <h2 class="font-display font-bold text-3xl text-tn-text">Hub de Links</h2>
-      <p class="text-tn-muted text-sm mt-1">Conexões oficiais, projetos e canais.</p>
-    </div>
-    <span class="text-xs text-tn-muted uppercase tracking-widest">// CONEXÕES ATIVAS</span>
-  </div>
-  <ul id="hub-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" aria-label="Links do hub"></ul>
-</section>
-
-<section id="terminal" class="max-w-6xl mx-auto px-5 py-20 border-b border-tn-line/60">
-  <div class="mb-8">
-    <h2 class="font-display font-bold text-3xl text-tn-text">Terminal Interativo</h2>
-    <p class="text-tn-muted text-sm mt-1">Digite <code class="text-tn-cyan bg-tn-cyan/10 px-1.5 py-0.5 rounded">help</code> para listar os comandos disponíveis.</p>
-  </div>
-  <div class="box-glow rounded-xl bg-tn-surface/90 border border-tn-line overflow-hidden backdrop-blur-md">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-tn-line bg-tn-surface2/80">
-      <div class="flex items-center gap-2">
-        <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-        <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-        <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
-        <span class="ml-2 text-xs text-tn-muted font-mono">tn@nexus:~ (zsh)</span>
-      </div>
-      <span class="text-[10px] text-tn-muted uppercase tracking-widest hidden sm:inline">VT100 Console</span>
-    </div>
-    <div id="terminal-output" class="h-80 sm:h-96 overflow-y-auto px-5 py-4 text-sm space-y-2 font-mono" role="log" aria-live="polite" aria-label="Saída do terminal"></div>
-    <form id="terminal-form" class="flex items-center gap-3 border-t border-tn-line px-5 py-3.5 bg-tn-surface2/30" autocomplete="off">
-      <label for="terminal-input" class="text-tn-cyan select-none font-bold">tn@nexus:~$</label>
-      <input id="terminal-input" name="terminal-input" type="text" maxlength="200" class="flex-1 bg-transparent outline-none text-tn-text placeholder:text-tn-muted/50 text-sm font-mono" placeholder="digite um comando..." aria-label="Comando do terminal">
-    </form>
-  </div>
-</section>
-
-<section id="promptlab" class="max-w-6xl mx-auto px-5 py-20 border-b border-tn-line/60">
-  <div class="mb-10">
-    <h2 class="font-display font-bold text-3xl text-tn-text">Prompt Lab</h2>
-    <p class="text-tn-muted text-sm mt-1">Gerador e otimizador de engenharia de prompts para IA.</p>
-  </div>
-
-  <div class="grid lg:grid-cols-2 gap-8">
-    <form id="prompt-form" class="space-y-6 bg-tn-surface/40 p-6 rounded-xl border border-tn-line/80 backdrop-blur-sm" novalidate>
-      <div>
-        <span class="block text-xs uppercase font-bold tracking-wider text-tn-muted mb-3">1. Categoria</span>
-        <div id="category-tabs" class="flex flex-wrap gap-2.5" role="tablist" aria-label="Categoria de prompt"></div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div onclick="switchPage('prompt')" class="hud-box p-6 cursor-pointer group hover:border-hud-cyan transition-all">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-hud-red font-tech text-xs tracking-widest">[ MODULE_01 ]</span>
+          <span class="text-hud-cyan font-mono text-xl group-hover:translate-x-2 transition-transform">→</span>
+        </div>
+        <h2 class="font-tech font-bold text-2xl text-white group-hover:text-hud-cyan transition-colors mb-2">PROMPT LAB_</h2>
+        <p class="text-hud-muted text-xs leading-relaxed">Gerador avançado e sintaxe de prompts otimizada para inteligências estruturadas.</p>
       </div>
 
-      <div>
-        <label for="pf-objetivo" class="block text-xs uppercase font-bold tracking-wider text-tn-muted mb-2">2. Objetivo <span class="text-tn-magenta">*</span></label>
-        <textarea id="pf-objetivo" name="objetivo" rows="3" maxlength="600" required class="w-full rounded-lg bg-tn-surface border border-tn-line focus:border-tn-cyan focus:ring-1 focus:ring-tn-cyan p-3 text-sm outline-none transition-all placeholder:text-tn-muted/40" placeholder="O que você deseja que a IA construa ou resolva?"></textarea>
+      <div onclick="switchPage('terminal')" class="hud-box p-6 cursor-pointer group hover:border-hud-red transition-all">
+        <div class="flex justify-between items-center mb-4">
+          <span class="text-hud-cyan font-tech text-xs tracking-widest">[ MODULE_02 ]</span>
+          <span class="text-hud-red font-mono text-xl group-hover:translate-x-2 transition-transform">→</span>
+        </div>
+        <h2 class="font-tech font-bold text-2xl text-white group-hover:text-hud-red transition-colors mb-2">TERMINAL INTERATIVO_</h2>
+        <p class="text-hud-muted text-xs leading-relaxed">Interface CLI completa com comandos interativos para o ecossistema.</p>
       </div>
+    </div>
+  </section>
 
-      <div>
-        <label for="pf-contexto" class="block text-xs uppercase font-bold tracking-wider text-tn-muted mb-2">3. Contexto Adicional</label>
-        <input id="pf-contexto" name="contexto" type="text" maxlength="300" class="w-full rounded-lg bg-tn-surface border border-tn-line focus:border-tn-cyan focus:ring-1 focus:ring-tn-cyan p-3 text-sm outline-none transition-all placeholder:text-tn-muted/40" placeholder="Stack técnico, audiência, limites, produto...">
-      </div>
-
-      <div class="grid grid-cols-2 gap-4">
+  <!-- PÁGINA 2: GERADOR DE PROMPT -->
+  <section id="page-prompt" class="page-view max-w-6xl mx-auto w-full my-6">
+    <div class="grid lg:grid-cols-2 gap-6">
+      <div class="hud-box p-6 space-y-4">
+        <h2 class="font-tech font-bold text-lg text-white border-b border-hud-border pb-2 text-hud-cyan">// INPUT_DATA</h2>
+        
         <div>
-          <label for="pf-tom" class="block text-xs uppercase font-bold tracking-wider text-tn-muted mb-2">4. Tom</label>
-          <select id="pf-tom" name="tom" class="w-full rounded-lg bg-tn-surface border border-tn-line focus:border-tn-cyan p-3 text-sm outline-none text-tn-text">
-            <option value="técnico e direto">Técnico e direto</option>
-            <option value="criativo e envolvente">Criativo e envolvente</option>
-            <option value="formal e persuasivo">Formal e persuasivo</option>
-            <option value="casual e amigável">Casual e amigável</option>
-          </select>
+          <label class="block text-xs text-hud-muted mb-1">OBJECTIVE_</label>
+          <textarea id="p-obj" rows="3" class="w-full bg-hud-bg border border-hud-border p-3 text-xs sm:text-sm text-hud-text focus:border-hud-cyan outline-none font-mono" placeholder="Ex: Escrever um roteiro ou código..."></textarea>
         </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-hud-muted mb-1">TONE_</label>
+            <select id="p-tone" class="w-full bg-hud-bg border border-hud-border p-2 text-xs text-hud-text focus:border-hud-cyan outline-none">
+              <option>Técnico & Direto</option>
+              <option>Criativo & Detalhado</option>
+              <option>Formal</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-hud-muted mb-1">FORMAT_</label>
+            <select id="p-format" class="w-full bg-hud-bg border border-hud-border p-2 text-xs text-hud-text focus:border-hud-cyan outline-none">
+              <option>Bloco de Código</option>
+              <option>Lista Numerada</option>
+              <option>Texto Explicativo</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="p-generate" class="w-full bg-hud-cyan/10 border border-hud-cyan text-hud-cyan font-tech font-bold py-3 text-xs sm:text-sm hover:bg-hud-cyan hover:text-black transition-all">GENERATE_PROMPT</button>
+      </div>
+
+      <div class="hud-box p-6 flex flex-col justify-between">
         <div>
-          <label for="pf-formato" class="block text-xs uppercase font-bold tracking-wider text-tn-muted mb-2">5. Formato</label>
-          <select id="pf-formato" name="formato" class="w-full rounded-lg bg-tn-surface border border-tn-line focus:border-tn-cyan p-3 text-sm outline-none text-tn-text">
-            <option value="lista com passos numerados">Lista numerada</option>
-            <option value="texto corrido">Texto corrido</option>
-            <option value="tabela comparativa">Tabela</option>
-            <option value="bloco de código comentado">Bloco de código</option>
-          </select>
+          <div class="flex justify-between items-center border-b border-hud-border pb-2 mb-4">
+            <h2 class="font-tech font-bold text-lg text-white text-hud-red">// SYNTHESIZED_OUTPUT</h2>
+            <button id="p-copy" class="text-xs border border-hud-border px-3 py-1 text-hud-muted hover:text-white hover:border-hud-cyan">COPY</button>
+          </div>
+          <textarea id="p-output" readonly rows="8" class="w-full bg-transparent text-xs sm:text-sm text-hud-text outline-none resize-none font-mono" placeholder="O prompt gerado aparecerá aqui..."></textarea>
+        </div>
+        <div class="flex justify-between items-center pt-4 border-t border-hud-border">
+          <span id="p-status" class="text-xs text-hud-cyan"></span>
+          <button onclick="switchPage('terminal')" class="text-xs text-hud-red hover:underline">IR PARA O TERMINAL →</button>
         </div>
       </div>
+    </div>
+  </section>
 
-      <p id="pf-error" class="text-tn-magenta text-xs font-semibold min-h-[1rem]" role="alert" aria-live="assertive"></p>
-
-      <button type="submit" class="w-full rounded-lg bg-tn-cyan/10 border border-tn-cyan text-tn-cyan font-bold py-3 text-sm hover:bg-tn-cyan hover:text-tn-bg hover:shadow-[0_0_15px_rgba(0,240,255,0.3)] transition-all uppercase tracking-wider">gerar prompt otimizado</button>
-    </form>
-
-    <div class="space-y-6">
-      <div class="box-glow rounded-xl bg-tn-surface border border-tn-line p-5">
-        <div class="flex items-center justify-between mb-3 border-b border-tn-line pb-3">
-          <span class="text-xs font-bold uppercase tracking-wider text-tn-muted">Prompt Final Sintetizado</span>
-          <button id="copy-btn" type="button" class="text-xs bg-tn-cyan/10 border border-tn-cyan/40 text-tn-cyan px-3 py-1 rounded hover:bg-tn-cyan hover:text-tn-bg transition-all disabled:opacity-30 disabled:cursor-not-allowed" disabled>copiar</button>
-        </div>
-        <textarea id="prompt-output" readonly rows="9" class="w-full resize-none bg-transparent text-sm text-tn-text outline-none font-mono" placeholder="Seu prompt pronto para uso aparecerá aqui..."></textarea>
-        <p id="copy-status" class="text-xs text-tn-cyan mt-2 min-h-[1rem]" role="status" aria-live="polite"></p>
+  <!-- PÁGINA 3: TERMINAL CLI -->
+  <section id="page-terminal" class="page-view max-w-4xl mx-auto w-full my-auto">
+    <div class="hud-box p-4 sm:p-6">
+      <div class="flex items-center justify-between border-b border-hud-border pb-3 mb-4 text-xs text-hud-muted">
+        <span>SESSION: ACTIVE</span>
+        <span>ROOT@TEKUSHNEXUS:~</span>
+      </div>
+      
+      <div id="term-out" class="h-64 sm:h-80 overflow-y-auto space-y-2 text-xs sm:text-sm font-mono mb-4">
+        <p class="text-hud-cyan">TekushNexus OS v2.0 Inicializado.</p>
+        <p class="text-hud-muted">Digite '<span class="text-white">help</span>' para ver comandos ou '<span class="text-white">prompt</span>' para voltar ao gerador.</p>
       </div>
 
-      <div class="bg-tn-surface/30 p-4 rounded-xl border border-tn-line/60">
-        <span class="block text-xs font-bold uppercase tracking-wider text-tn-muted mb-3">// Histórico Local</span>
-        <ul id="history-list" class="space-y-2.5 text-xs text-tn-muted" aria-label="Histórico de prompts gerados"></ul>
-      </div>
+      <form id="term-form" class="flex items-center gap-2 border-t border-hud-border pt-3">
+        <span class="text-hud-red font-bold">$</span>
+        <input id="term-in" type="text" maxlength="150" class="w-full bg-transparent outline-none text-xs sm:text-sm text-white font-mono" placeholder="digite um comando..." autofocus>
+      </form>
     </div>
-  </div>
-</section>
+  </section>
 
-<section id="contact" class="max-w-6xl mx-auto px-5 py-20">
-  <div class="bg-gradient-to-r from-tn-surface via-tn-surface2 to-tn-surface p-8 sm:p-12 rounded-2xl border border-tn-line box-glow flex flex-col md:flex-row items-center justify-between gap-6">
-    <div>
-      <h2 class="font-display font-bold text-3xl text-tn-text mb-2">Vamos conversar?</h2>
-      <p class="text-tn-muted text-sm max-w-lg font-sans leading-relaxed">Para solicitações de engenharia, auditoria de código ou colaboração técnica, use o terminal ou acesse nossos canais diretos.</p>
-    </div>
-    <a href="#terminal" class="whitespace-nowrap rounded-lg bg-tn-magenta text-tn-bg font-bold px-6 py-3 text-sm hover:shadow-[0_0_20px_rgba(255,43,214,0.5)] transition-all">Ir para o Terminal</a>
-  </div>
-</section>
-
-</main>
-
-<aside id="dev-panel" class="fixed bottom-5 right-5 z-50 hidden w-[min(92vw,400px)] max-h-[75vh] overflow-y-auto rounded-xl border border-tn-line bg-tn-surface box-glow p-5 text-xs backdrop-blur-md" aria-label="Painel de testes de desenvolvimento">
-  <div class="flex items-center justify-between mb-4 border-b border-tn-line pb-2">
-    <span class="font-display font-bold text-tn-cyan tracking-wider">TN_DEV // SUITE DE TESTES</span>
-    <button id="run-tests-btn" type="button" class="border border-tn-line rounded px-2.5 py-1 text-tn-muted hover:text-tn-cyan hover:border-tn-cyan bg-tn-surface2">Executar</button>
-  </div>
-  <p id="test-summary" class="text-tn-muted mb-3 font-semibold"></p>
-  <ul id="test-results" class="space-y-1.5 font-mono"></ul>
-</aside>
-
-<footer class="border-t border-tn-line/60 bg-tn-bg/90">
-  <div class="max-w-6xl mx-auto px-5 py-8 text-xs text-tn-muted flex flex-col sm:flex-row items-center justify-between gap-4">
-    <span>© <span id="footer-year"></span> TekushNexus // TN. Todos os direitos reservados.</span>
-    <span class="cursor-blink text-tn-cyan font-bold bg-tn-cyan/10 px-2 py-1 rounded border border-tn-cyan/30">status: online</span>
-  </div>
-</footer>
+  <!-- FOOTER -->
+  <footer class="border-t border-hud-border pt-4 flex justify-between items-center text-xs text-hud-muted font-mono">
+    <span>SYSTEM STATUS: <span class="text-hud-cyan">ONLINE</span></span>
+    <span>TEKUSHNEXUS © 2026</span>
+  </footer>
 
 <script>
-(() => {
-  'use strict';
+  // Troca de páginas / telas
+  function switchPage(pageId) {
+    document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + pageId).classList.add('active');
 
-  const DOM = {
-    qs: (sel, ctx = document) => ctx.querySelector(sel),
-    qsa: (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel)),
-    create(tag, opts = {}) {
-      const el = document.createElement(tag);
-      if (opts.className) el.className = opts.className;
-      if (opts.text !== undefined) el.textContent = opts.text;
-      if (opts.attrs) {
-        Object.entries(opts.attrs).forEach(([key, value]) => el.setAttribute(key, value));
+    // Atualiza estática dos botões do topo
+    ['home', 'prompt', 'terminal'].forEach(id => {
+      const btn = document.getElementById('nav-' + id);
+      if(id === pageId) {
+        btn.className = 'text-hud-cyan border-b-2 border-hud-cyan pb-1 transition-all';
+      } else {
+        btn.className = 'text-hud-muted hover:text-white transition-all';
       }
-      return el;
-    }
-  };
-
-  const Sanitize = {
-    stripControlChars(value) {
-      return String(value ?? '').replace(/[\u0000-\u001F\u007F]/g, '');
-    },
-    clamp(value, max = 2000) {
-      return String(value ?? '').slice(0, max);
-    },
-    text(value) {
-      return String(value ?? '').replace(/[<>&"'`]/g, (ch) => ({
-        '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;', '`': '&#96;'
-      }[ch]));
-    },
-    input(value, max = 2000) {
-      return this.clamp(this.stripControlChars(String(value ?? '')), max);
-    },
-    isSafeUrl(url) {
-      try {
-        const parsed = new URL(url, window.location.origin);
-        return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-      } catch {
-        return false;
-      }
-    }
-  };
-
-  const Storage = {
-    KEY: 'tn_prompt_history_v1',
-    load() {
-      try {
-        const raw = window.localStorage.getItem(this.KEY);
-        if (!raw) return [];
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed.slice(0, 8) : [];
-      } catch {
-        return [];
-      }
-    },
-    save(list) {
-      try {
-        window.localStorage.setItem(this.KEY, JSON.stringify(list.slice(0, 8)));
-      } catch {
-        return false;
-      }
-      return true;
-    }
-  };
-
-  const hubLinks = [
-    { label: 'GitHub', desc: 'Repositórios e código aberto', href: 'https://github.com/tekushnexus' },
-    { label: 'LinkedIn', desc: 'Trajetória profissional', href: 'https://linkedin.com/company/tekushnexus' },
-    { label: 'Portfólio', desc: 'Projetos selecionados', href: 'https://tekushnexus.dev' },
-    { label: 'Blog', desc: 'Notas sobre engenharia e segurança', href: 'https://tekushnexus.dev/blog' },
-    { label: 'E-mail', desc: 'contato@tekushnexus.dev', href: 'mailto:contato@tekushnexus.dev' },
-    { label: 'Currículo', desc: 'PDF atualizado', href: 'https://tekushnexus.dev/cv.pdf' }
-  ];
-
-  function renderHub() {
-    const grid = DOM.qs('#hub-grid');
-    const fragment = document.createDocumentFragment();
-    hubLinks.forEach((item) => {
-      const li = DOM.create('li');
-      const isSafe = Sanitize.isSafeUrl(item.href) || item.href.startsWith('mailto:');
-      const link = DOM.create('a', {
-        className: 'block rounded-xl border border-tn-line bg-tn-surface/60 hover:bg-tn-surface box-glow-hover p-5 transition-all group',
-        attrs: isSafe ? { href: item.href, rel: 'noopener noreferrer' } : { href: '#' }
-      });
-      if (isSafe && item.href.startsWith('http')) link.setAttribute('target', '_blank');
-      const title = DOM.create('span', { className: 'block font-display font-bold text-base text-tn-text group-hover:text-tn-cyan transition-colors mb-1', text: item.label });
-      const desc = DOM.create('span', { className: 'block text-xs text-tn-muted font-sans', text: item.desc });
-      link.append(title, desc);
-      li.appendChild(link);
-      fragment.appendChild(li);
     });
-    grid.appendChild(fragment);
   }
 
-  const TerminalCommands = {
-    help() {
-      return [
-        'Comandos disponíveis:',
-        '  help     -> lista os comandos',
-        '  skills   -> mostra o stack técnico',
-        '  contact  -> mostra os canais de contato',
-        '  clear    -> limpa o terminal'
-      ];
-    },
-    skills() {
-      return [
-        'Stack: JavaScript (ES6+), HTML5, CSS3, Tailwind CSS',
-        'Áreas: segurança ofensiva, arquitetura web, automação, IA aplicada',
-        'Ferramentas: Git, DevTools, testes automatizados'
-      ];
-    },
-    contact() {
-      return [
-        'E-mail:   contato@tekushnexus.dev',
-        'GitHub:   github.com/tekushnexus',
-        'LinkedIn: linkedin.com/company/tekushnexus'
-      ];
-    },
-    clear() {
-      return null;
-    }
-  };
+  // Sanitização simples
+  const escapeHTML = (str) => String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
-  function resolveCommand(rawInput) {
-    const clean = Sanitize.input(rawInput, 200).trim();
-    if (!clean) return { type: 'empty' };
-    const name = clean.toLowerCase().split(/\s+/)[0];
-    if (Object.prototype.hasOwnProperty.call(TerminalCommands, name)) {
-      if (name === 'clear') return { type: 'clear' };
-      return { type: 'output', lines: TerminalCommands[name]() };
-    }
-    return { type: 'unknown', command: name };
-  }
+  // Lógica do Gerador de Prompts
+  document.getElementById('p-generate').addEventListener('click', () => {
+    const obj = escapeHTML(document.getElementById('p-obj').value.trim());
+    if(!obj) return;
+    const tone = document.getElementById('p-tone').value;
+    const format = document.getElementById('p-format').value;
 
-  const Terminal = (() => {
-    let output;
-    let history = [];
-    let historyIndex = -1;
-
-    function printLine(text, variant = 'default') {
-      const variants = {
-        default: 'text-tn-text',
-        prompt: 'text-tn-cyan font-bold',
-        error: 'text-tn-magenta font-semibold',
-        muted: 'text-tn-muted'
-      };
-      const line = DOM.create('p', { className: variants[variant] || variants.default, text });
-      output.appendChild(line);
-      output.scrollTop = output.scrollHeight;
-    }
-
-    function printBanner() {
-      printLine('TekushNexus [TN] terminal v1.0', 'muted');
-      printLine('Digite "help" para começar.', 'muted');
-    }
-
-    function handle(rawInput) {
-      const echo = Sanitize.input(rawInput, 200);
-      printLine(`tn@nexus:~$ ${echo}`, 'prompt');
-      const result = resolveCommand(rawInput);
-      if (result.type === 'empty') return;
-      if (result.type === 'clear') {
-        output.textContent = '';
-        return;
-      }
-      if (result.type === 'unknown') {
-        printLine(`comando não encontrado: ${Sanitize.input(result.command, 60)}`, 'error');
-        printLine('digite "help" para ver os comandos disponíveis', 'muted');
-        return;
-      }
-      result.lines.forEach((line) => printLine(line));
-    }
-
-    function init() {
-      output = DOM.qs('#terminal-output');
-      const form = DOM.qs('#terminal-form');
-      const input = DOM.qs('#terminal-input');
-      printBanner();
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const value = input.value;
-        if (!Sanitize.input(value, 200).trim()) return;
-        history.push(value);
-        historyIndex = history.length;
-        handle(value);
-        input.value = '';
-      });
-      input.addEventListener('keydown', (event) => {
-        if (event.key === 'ArrowUp') {
-          event.preventDefault();
-          if (historyIndex > 0) {
-            historyIndex -= 1;
-            input.value = history[historyIndex] ?? '';
-          }
-        } else if (event.key === 'ArrowDown') {
-          event.preventDefault();
-          if (historyIndex < history.length - 1) {
-            historyIndex += 1;
-            input.value = history[historyIndex] ?? '';
-          } else {
-            historyIndex = history.length;
-            input.value = '';
-          }
-        }
-      });
-    }
-
-    return { init, handle, printLine };
-  })();
-
-  const PromptTemplates = {
-    codigo(f) {
-      return [
-        `Atue como um engenheiro de software sênior com foco em ${f.contexto || 'boas práticas de desenvolvimento'}.`,
-        `Objetivo: ${f.objetivo}`,
-        `Tom da resposta: ${f.tom}.`,
-        `Formato de saída: ${f.formato}.`,
-        'Explique as decisões técnicas, aponte riscos de segurança e sugira testes automatizados relevantes.'
-      ].join('\n');
-    },
-    marketing(f) {
-      return [
-        `Atue como um estrategista de marketing especialista em ${f.contexto || 'crescimento de marca'}.`,
-        `Objetivo: ${f.objetivo}`,
-        `Tom da resposta: ${f.tom}.`,
-        `Formato de saída: ${f.formato}.`,
-        'Inclua uma proposta de valor clara, um CTA direto e considere o público-alvo em cada decisão.'
-      ].join('\n');
-    },
-    criacao(f) {
-      return [
-        `Atue como um diretor criativo especialista em ${f.contexto || 'narrativa e conteúdo original'}.`,
-        `Objetivo: ${f.objetivo}`,
-        `Tom da resposta: ${f.tom}.`,
-        `Formato de saída: ${f.formato}.`,
-        'Priorize originalidade, imagens sensoriais e um arco claro do início ao fim.'
-      ].join('\n');
-    }
-  };
-
-  const categories = [
-    { id: 'codigo', label: 'Código' },
-    { id: 'marketing', label: 'Marketing' },
-    { id: 'criacao', label: 'Criação' }
-  ];
-
-  function validatePromptFields(fields) {
-    const objetivo = Sanitize.input(fields.objetivo, 600).trim();
-    if (objetivo.length < 8) {
-      return { valid: false, error: 'Descreva o objetivo com pelo menos 8 caracteres.' };
-    }
-    return { valid: true };
-  }
-
-  function buildPrompt(categoryId, rawFields) {
-    const fields = {
-      objetivo: Sanitize.input(rawFields.objetivo, 600).trim(),
-      contexto: Sanitize.input(rawFields.contexto, 300).trim(),
-      tom: Sanitize.input(rawFields.tom, 80).trim(),
-      formato: Sanitize.input(rawFields.formato, 80).trim()
-    };
-    const validation = validatePromptFields(fields);
-    if (!validation.valid) return { ok: false, error: validation.error };
-    const template = PromptTemplates[categoryId] || PromptTemplates.codigo;
-    return { ok: true, prompt: template(fields) };
-  }
-
-  const PromptLab = (() => {
-    let activeCategory = 'codigo';
-
-    function renderTabs() {
-      const container = DOM.qs('#category-tabs');
-      categories.forEach((cat) => {
-        const isActive = cat.id === activeCategory;
-        const btn = DOM.create('button', {
-          className: `rounded-lg font-semibold px-4 py-2 text-xs transition-all ${
-            isActive
-              ? 'border border-tn-magenta text-tn-bg bg-tn-magenta shadow-[0_0_12px_rgba(255,43,214,0.4)]'
-              : 'border border-tn-line text-tn-muted bg-tn-surface hover:border-tn-magenta/50 hover:text-tn-text'
-          }`,
-          text: cat.label,
-          attrs: { type: 'button', role: 'tab', 'aria-selected': String(isActive), 'data-category': cat.id }
-        });
-        btn.addEventListener('click', () => {
-          activeCategory = cat.id;
-          renderTabsRefresh();
-        });
-        container.appendChild(btn);
-      });
-    }
-
-    function renderTabsRefresh() {
-      DOM.qs('#category-tabs').textContent = '';
-      renderTabs();
-    }
-
-    function renderHistory() {
-      const list = DOM.qs('#history-list');
-      list.textContent = '';
-      const items = Storage.load();
-      if (items.length === 0) {
-        list.appendChild(DOM.create('li', { className: 'text-tn-muted/60 italic', text: 'Nenhum prompt gerado ainda.' }));
-        return;
-      }
-      items.forEach((item) => {
-        const li = DOM.create('li', { className: 'rounded-lg border border-tn-line/70 bg-tn-surface/80 p-3' });
-        const meta = DOM.create('span', { className: 'block font-bold text-tn-cyan mb-0.5', text: `[${item.category}]` });
-        const snippet = DOM.create('span', { className: 'block text-tn-muted font-sans', text: item.objetivo });
-        li.append(meta, snippet);
-        list.appendChild(li);
-      });
-    }
-
-    function persistEntry(categoryId, objetivo) {
-      const items = Storage.load();
-      items.unshift({ category: categoryId, objetivo: Sanitize.clamp(objetivo, 140), ts: Date.now() });
-      Storage.save(items);
-      renderHistory();
-    }
-
-    function init() {
-      renderTabsRefresh();
-      renderHistory();
-      const form = DOM.qs('#prompt-form');
-      const errorEl = DOM.qs('#pf-error');
-      const output = DOM.qs('#prompt-output');
-      const copyBtn = DOM.qs('#copy-btn');
-      const copyStatus = DOM.qs('#copy-status');
-
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        errorEl.textContent = '';
-        copyStatus.textContent = '';
-        const fields = {
-          objetivo: DOM.qs('#pf-objetivo').value,
-          contexto: DOM.qs('#pf-contexto').value,
-          tom: DOM.qs('#pf-tom').value,
-          formato: DOM.qs('#pf-formato').value
-        };
-        const result = buildPrompt(activeCategory, fields);
-        if (!result.ok) {
-          errorEl.textContent = result.error;
-          output.value = '';
-          copyBtn.disabled = true;
-          return;
-        }
-        output.value = result.prompt;
-        copyBtn.disabled = false;
-        persistEntry(activeCategory, fields.objetivo);
-      });
-
-      copyBtn.addEventListener('click', async () => {
-        if (!output.value) return;
-        try {
-          await navigator.clipboard.writeText(output.value);
-          copyStatus.textContent = 'Prompt copiado com sucesso!';
-        } catch {
-          output.select();
-          copyStatus.textContent = 'Selecione e copie manualmente (Ctrl/Cmd+C).';
-        }
-      });
-    }
-
-    return { init };
-  })();
-
-  const TestSuite = (() => {
-    const results = [];
-
-    function assert(name, condition) {
-      results.push({ name, pass: Boolean(condition) });
-    }
-
-    function run() {
-      results.length = 0;
-
-      const helpLines = TerminalCommands.help();
-      assert('terminal: help retorna lista não vazia', Array.isArray(helpLines) && helpLines.length > 0);
-      assert('terminal: help menciona "help"', helpLines.some((l) => l.includes('help')));
-
-      const unknown = resolveCommand('comando-inexistente');
-      assert('terminal: comando desconhecido é sinalizado', unknown.type === 'unknown' && unknown.command === 'comando-inexistente');
-
-      const cleared = resolveCommand('clear');
-      assert('terminal: clear retorna instrução de limpeza', cleared.type === 'clear');
-
-      const emptyCmd = resolveCommand('   ');
-      assert('terminal: entrada vazia é ignorada', emptyCmd.type === 'empty');
-
-      const xssPayload = '<script>alert(1)<' + '/script>';
-      const sanitizedXss = Sanitize.text(xssPayload);
-      assert('sanitize: neutraliza tag <script>', !sanitizedXss.includes('<script>'));
-
-      const longInput = 'a'.repeat(5000);
-      assert('sanitize: input respeita limite de tamanho', Sanitize.input(longInput, 100).length === 100);
-
-      const controlPayload = 'teste\u0000malicioso\u0007';
-      assert('sanitize: remove caracteres de controle', !/[\u0000-\u001F\u007F]/.test(Sanitize.stripControlChars(controlPayload)));
-
-      const validPrompt = buildPrompt('codigo', {
-        objetivo: 'Criar uma API REST segura',
-        contexto: 'Node.js',
-        tom: 'técnico e direto',
-        formato: 'lista com passos numerados'
-      });
-      assert('promptlab: gera prompt válido com objetivo preenchido', validPrompt.ok === true && validPrompt.prompt.length > 0);
-      assert('promptlab: prompt gerado contém o objetivo', validPrompt.ok && validPrompt.prompt.includes('Criar uma API REST segura'));
-
-      const invalidPrompt = buildPrompt('codigo', { objetivo: 'oi', contexto: '', tom: 'técnico', formato: 'lista' });
-      assert('promptlab: rejeita objetivo muito curto', invalidPrompt.ok === false && Boolean(invalidPrompt.error));
-
-      const promptWithScript = buildPrompt('marketing', {
-        objetivo: '<img src=x onerror=alert(1)>Divulgar produto novo',
-        contexto: 'e-commerce',
-        tom: 'formal e persuasivo',
-        formato: 'texto corrido'
-      });
-      assert(
-        'promptlab: payload de XSS no objetivo é sanitizado no template',
-        promptWithScript.ok && !promptWithScript.prompt.includes('<img')
-      );
-
-      assert('categorias: todas as categorias têm template correspondente', categories.every((c) => typeof PromptTemplates[c.id] === 'function'));
-
-      renderResults();
-      return results;
-    }
-
-    function renderResults() {
-      const list = DOM.qs('#test-results');
-      const summary = DOM.qs('#test-summary');
-      list.textContent = '';
-      const passCount = results.filter((r) => r.pass).length;
-      summary.textContent = `${passCount}/${results.length} testes passaram`;
-      results.forEach((r) => {
-        const li = DOM.create('li', {
-          className: r.pass ? 'text-tn-cyan' : 'text-tn-magenta font-bold',
-          text: `${r.pass ? '[PASS]' : '[FAIL]'} ${r.name}`
-        });
-        list.appendChild(li);
-      });
-    }
-
-    return { run };
-  })();
-
-  function initDevPanel() {
-    const panel = DOM.qs('#dev-panel');
-    const toggleBtn = DOM.qs('#dev-toggle');
-    const runBtn = DOM.qs('#run-tests-btn');
-
-    toggleBtn.addEventListener('click', () => {
-      const isHidden = panel.classList.contains('hidden');
-      panel.classList.toggle('hidden');
-      toggleBtn.setAttribute('aria-expanded', String(isHidden));
-      if (isHidden) TestSuite.run();
-    });
-    runBtn.addEventListener('click', () => TestSuite.run());
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    renderHub();
-    Terminal.init();
-    PromptLab.init();
-    initDevPanel();
-    DOM.qs('#footer-year').textContent = String(new Date().getFullYear());
+    document.getElementById('p-output').value = `[SYSTEM_PROMPT]\nOBJETIVO: ${obj}\nTOM DE RESPOSTA: ${tone}\nFORMATO DE SAÍDA: ${format}\n\nPor favor, execute o pedido com precisão técnica.`;
   });
-})();
+
+  document.getElementById('p-copy').addEventListener('click', async () => {
+    const out = document.getElementById('p-output');
+    if(!out.value) return;
+    await navigator.clipboard.writeText(out.value);
+    document.getElementById('p-status').textContent = 'COPIADO!';
+    setTimeout(() => document.getElementById('p-status').textContent = '', 3000);
+  });
+
+  // Lógica do Terminal
+  const termOut = document.getElementById('term-out');
+  const termForm = document.getElementById('term-form');
+  const termIn = document.getElementById('term-in');
+
+  function printLine(text, color = 'text-hud-text') {
+    const p = document.createElement('p');
+    p.className = color;
+    p.textContent = text;
+    termOut.appendChild(p);
+    termOut.scrollTop = termOut.scrollHeight;
+  }
+
+  termForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const cmd = escapeHTML(termIn.value.trim());
+    if(!cmd) return;
+
+    printLine(`$ ${cmd}`, 'text-hud-cyan');
+    const cleanCmd = cmd.toLowerCase();
+
+    if(cleanCmd === 'clear') {
+      termOut.textContent = '';
+    } else if(cleanCmd === 'help') {
+      printLine('Comandos: help, clear, info, status, prompt, home', 'text-hud-muted');
+    } else if(cleanCmd === 'info') {
+      printLine('TekushNexus Terminal v2.0 - Interface HUD', 'text-white');
+    } else if(cleanCmd === 'status') {
+      printLine('Sistemas operando em 100% de capacidade.', 'text-hud-cyan');
+    } else if(cleanCmd === 'prompt') {
+      switchPage('prompt');
+    } else if(cleanCmd === 'home') {
+      switchPage('home');
+    } else {
+      printLine(`Comando não reconhecido: ${cmd}`, 'text-hud-red');
+    }
+
+    termIn.value = '';
+  });
 </script>
 </body>
 </html>
